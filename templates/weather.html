@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>What's the weather like?</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+    <script>
+        setTimeout(function() {
+            var flashMessages = document.querySelectorAll('.notification');
+            flashMessages.forEach(function(flashMessage) {
+                flashMessage.style.display = 'none';
+            });
+        }, 1000);
+    </script>
+</head>
+
+<body>
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    What's the weather like?
+                </h1>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <!-- container:a centered container -->
+        <div class="container">
+            <div class="columns">
+                <!-- a single column with a width of 4 columns and an offset of 4 columns.-->
+                <div class="column is-offset-4 is-4">
+                    <!-- ****code with semantic meaning ***-->
+                    <form method="POST">
+                        <!-- creates a horizontal layout  -->
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <!-- code with semantic meaning -->
+                                <input class="input" name="city" type="text" placeholder="City Name">
+                            </div>
+                            <div class="control">
+                                <button class="button is-info">
+                                    Add City
+                                </button>
+                            </div>
+                        </div>
+                        <!-- with message: check if there is message -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                {% set message_class = 'is-success' %}
+
+                                {% if category == 'error' %}
+                                    {% set message_class = 'is-danger' %}
+                                {% endif %}
+                                <div class="notification {{ message_class }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <!-- code with semantic meaning -->
+                    {% for weather in weather_data %}
+                    <div class="box">
+                        <!-- media is commonly used to display a combination of an image/icon and textual content -->
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <!-- code with semantic meaning -->
+                                    <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <!-- code with semantic meaning -->
+                                        <span class="title">{{ weather.city }}</span>
+                                        <br>
+                                        <span class="subtitle">{{ weather.temperature }}° F</span>
+                                        <br> {{ weather.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- code with semantic meaning -->
+                            <!-- url_for: allows the server-side code to identify and delete the city  -->
+                            <div class="media-right">
+                                <!-- 'delete_city': route name/ name:weather.city对应前面的for weather in weathers-->
+                                <a href="{{ url_for('delete_city', name=weather.city) }}">
+                                    <button class="delete"></button>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    </footer>
+</body>
+
+</html>
